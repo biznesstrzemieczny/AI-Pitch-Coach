@@ -271,7 +271,7 @@ export default function Home() {
                     Średni wynik
                   </span>
                   <button
-                    onClick={() => setMobileTab("history")}
+                    onClick={() => { setHistorySubTab("stats"); setMobileTab("history"); }}
                     className="mt-1 self-start text-[11px] font-light text-white/40 transition-colors hover:text-white/65"
                   >
                     Twoje statystyki →
