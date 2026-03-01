@@ -13,7 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  viewportFit: "cover",
+  themeColor: "#06060a",
 };
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   description: "AI-powered public speaking coach - ćwicz swoją mowę. Otrzymaj bezlitosną ocenę.",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "AI Pitch Coach",
   },
 };
