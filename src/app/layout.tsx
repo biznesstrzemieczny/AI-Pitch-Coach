@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,9 +12,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  viewportFit: "cover",
+  themeColor: "#000000",
+};
+
 export const metadata: Metadata = {
   title: "AI Pitch Coach",
   description: "AI-powered public speaking coach - ćwicz swoją mowę. Otrzymaj bezlitosną ocenę.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "AI Pitch Coach",
+  },
 };
 
 export default function RootLayout({

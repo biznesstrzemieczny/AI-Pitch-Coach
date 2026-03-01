@@ -231,7 +231,7 @@ export default function Home() {
 
         {/* ── TAB: HOME ── */}
         {mobileTab === "home" && (
-          <div className="flex flex-1 flex-col px-7 pt-16 pb-36">
+          <div className="flex flex-1 flex-col px-7 pb-36" style={{ paddingTop: "calc(env(safe-area-inset-top) + 3.5rem)" }}>
             {/* Tytuł + podtytuł */}
             <div className="mb-7">
               <h1
@@ -353,7 +353,7 @@ export default function Home() {
 
         {/* ── TAB: HISTORY ── */}
         {mobileTab === "history" && (
-          <div className="flex flex-1 flex-col px-7 pb-36 pt-14">
+          <div className="flex flex-1 flex-col px-7 pt-14" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 9rem)" }}>
             <p className="mb-1 text-xl font-bold text-white/90 tracking-tight">Historia nagrań</p>
             <p className="mb-5 text-xs text-white/40">{attempts.length} sesji · Średnia {avgScore} pkt</p>
             {attempts.length === 0 ? (
@@ -405,7 +405,7 @@ export default function Home() {
         )}
 
         {/* ── BOTTOM NAV ── */}
-        <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-9 px-10">
+        <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-10" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}>
           <div
             className="flex items-center gap-4 rounded-full px-3 py-2.5"
             style={{
