@@ -325,15 +325,17 @@ export default function Home() {
               </div>
             )}
 
-            {/* Link – pełna historia */}
-            <button
-              onClick={() => setMobileTab("history")}
-              className="mt-5 w-full text-center text-[11px] font-light tracking-wide text-white/40 transition-colors hover:text-white/65"
-            >
-              Pełna historia nagrań →
-            </button>
+            {/* Link – pełna historia (tylko gdy są nagrania) */}
+            {attempts.length > 0 && (
+              <button
+                onClick={() => setMobileTab("history")}
+                className="mt-5 w-full text-center text-[11px] font-light tracking-wide text-white/40 transition-colors hover:text-white/65"
+              >
+                Pełna historia nagrań →
+              </button>
+            )}
 
-            {/* CTA – spróbuj ponownie */}
+            {/* CTA – spróbuj / sprawdź się */}
             <button
               onClick={() => setRecordingOpen(true)}
               className="mt-8 flex w-full items-center justify-center gap-2.5 rounded-xl py-3.5 transition-all duration-300 active:scale-[0.98]"
@@ -346,7 +348,7 @@ export default function Home() {
               }}
             >
               <span className="text-xs font-light tracking-wide text-white/90">
-                Gotowy spróbować ponownie?
+                {attempts.length === 0 ? "Sprawdź się!" : "Gotowy spróbować ponownie?"}
               </span>
               <Mic className="size-3.5 text-white/60" />
             </button>
@@ -356,8 +358,8 @@ export default function Home() {
         {/* ── TAB: HISTORY ── */}
         {mobileTab === "history" && (
           <div className="flex flex-1 flex-col px-7 pt-8 pb-36">
-            <p className="mb-1 text-xl font-bold text-white/90 tracking-tight">Historia nagrań</p>
-            <p className="mb-5 text-xs text-white/40">{attempts.length} sesji · Średnia {avgScore} pkt</p>
+            <h1 className="mb-1 text-4xl font-bold tracking-tight text-white" style={{ textShadow: "0 0 20px rgba(255,255,255,0.25)" }}>Historia nagrań</h1>
+            <p className="mb-5 text-sm font-light text-white/60">{attempts.length} sesji · Średnia {avgScore} pkt</p>
             {attempts.length === 0 ? (
               <p className="py-16 text-center text-xs text-white/40">
                 Brak nagrań. Wróć i nagraj swój pierwszy pitch.
