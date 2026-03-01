@@ -108,7 +108,7 @@ export function ResultsView({ result, onBack, onRetry }: ResultsViewProps) {
         <Button
           variant="ghost"
           onClick={onBack}
-          className="btn-frosted gap-2 rounded-xl border-0 text-white hover:bg-transparent"
+          className="btn-frosted h-12 gap-2 rounded-xl border-0 px-6 text-base text-white hover:bg-transparent sm:h-10 sm:px-4 sm:text-sm"
         >
           <ArrowLeft className="size-4" />
           Wróć do Dashboardu
@@ -116,7 +116,7 @@ export function ResultsView({ result, onBack, onRetry }: ResultsViewProps) {
         <Button
           variant="ghost"
           onClick={onRetry}
-          className="btn-cta-glass gap-2 rounded-xl border-0 font-semibold text-white hover:bg-transparent"
+          className="btn-cta-glass h-12 gap-2 rounded-xl border-0 px-6 text-base font-semibold text-white hover:bg-transparent sm:h-10 sm:px-4 sm:text-sm"
         >
           <RotateCcw className="size-4" />
           Spróbuj ponownie

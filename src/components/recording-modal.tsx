@@ -135,21 +135,22 @@ export function RecordingModal({
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
       <DialogContent
-        className="glass-panel overflow-hidden rounded-2xl sm:max-w-2xl"
+        className="glass-panel overflow-hidden rounded-none p-0 sm:rounded-2xl sm:max-w-2xl md:p-6 max-w-full h-[100dvh] sm:h-auto flex flex-col"
         showCloseButton={status !== "recording"}
         onPointerDownOutside={(e) =>
           status === "recording" && e.preventDefault()
         }
       >
-        <DialogHeader>
+        {/* Header – ukryty na mobile podczas nagrywania */}
+        <DialogHeader className="px-5 pt-5 sm:px-0 sm:pt-0">
           <DialogTitle>
             {status === "idle" && "Nagrywanie pitcha"}
             {status === "recording" && "Nagrywanie w toku..."}
-            {status === "analyzing" && "AI ocenia Twój pitch..."}
+            {status === "analyzing" && "Sprawdźmy jak Ci poszło"}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="flex flex-1 flex-col gap-4 px-5 pb-8 sm:px-0 sm:pb-0">
           {error && (
             <div className="rounded-lg bg-destructive/15 px-4 py-2 text-sm text-destructive">
               {error}
@@ -157,17 +158,18 @@ export function RecordingModal({
           )}
 
           {status === "analyzing" && (
-            <div className="flex flex-col items-center justify-center gap-4 py-12">
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 py-12">
               <div className="h-12 w-12 animate-spin rounded-full border-4 border-zinc-600 border-t-teal-400" />
               <p className="text-muted-foreground text-lg">
-                AI ocenia Twój pitch...
+                AI Ocenia Twój Pitch...
               </p>
             </div>
           )}
 
           {(status === "idle" || status === "recording") && (
             <>
-              <div className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm">
+              {/* Kamera – fullscreen na mobile */}
+              <div className="relative flex-1 overflow-hidden rounded-2xl border border-white/10 bg-black sm:aspect-video sm:flex-none">
                 <video
                   ref={videoRef}
                   autoPlay
@@ -176,14 +178,14 @@ export function RecordingModal({
                   className="h-full w-full object-cover"
                 />
                 {status === "idle" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <p className="text-muted-foreground text-sm">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 px-6">
+                    <p className="text-center text-sm text-white/50">
                       Kliknij &quot;Rozpocznij nagrywanie&quot;, aby włączyć kamerę
                     </p>
                   </div>
                 )}
                 {status === "recording" && (
-                  <div className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-red-500/90 px-2 py-1 text-xs font-medium text-white">
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
                     <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
                     REC
                   </div>
