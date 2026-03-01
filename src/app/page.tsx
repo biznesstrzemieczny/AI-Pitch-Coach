@@ -144,6 +144,7 @@ export default function Home() {
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [recordingOpen, setRecordingOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<"home" | "history">("home");
+  const [historySubTab, setHistorySubTab] = useState<"recordings" | "stats">("recordings");
   const [lastResult, setLastResult] = useState<AnalysisResult | null>(null);
   const hasLoadedRef = useRef(false);
 
@@ -358,53 +359,174 @@ export default function Home() {
         {/* ── TAB: HISTORY ── */}
         {mobileTab === "history" && (
           <div className="flex flex-1 flex-col px-7 pt-8 pb-36">
-            <h1 className="mb-1 text-4xl font-bold tracking-tight text-white" style={{ textShadow: "0 0 20px rgba(255,255,255,0.25)" }}>Historia nagrań</h1>
+            <h1 className="mb-1 text-4xl font-bold tracking-tight text-white" style={{ textShadow: "0 0 20px rgba(255,255,255,0.25)" }}>
+              {historySubTab === "recordings" ? "Historia nagrań" : "Statystyki"}
+            </h1>
             <p className="mb-5 text-sm font-light text-white/60">{attempts.length} sesji · Średnia {avgScore} pkt</p>
-            {attempts.length === 0 ? (
-              <p className="py-16 text-center text-xs text-white/40">
-                Brak nagrań. Wróć i nagraj swój pierwszy pitch.
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {attempts.map((a) => (
+
+            {/* Segmented control */}
+            <div
+              className="mb-6 flex rounded-xl p-1"
+              style={{
+                background: "rgba(28,28,32,0.55)",
+                backdropFilter: "blur(40px) saturate(180%)",
+                WebkitBackdropFilter: "blur(40px) saturate(180%)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.2)",
+              }}
+            >
+              {(["recordings", "stats"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setHistorySubTab(tab)}
+                  className="flex-1 rounded-lg py-2 text-xs font-medium tracking-wide transition-all duration-200"
+                  style={{
+                    background: historySubTab === tab
+                      ? "rgba(255,255,255,0.12)"
+                      : "transparent",
+                    color: historySubTab === tab
+                      ? "rgba(255,255,255,0.95)"
+                      : "rgba(255,255,255,0.35)",
+                    boxShadow: historySubTab === tab
+                      ? "inset 0 1px 0 rgba(255,255,255,0.18), 0 1px 4px rgba(0,0,0,0.3)"
+                      : "none",
+                  }}
+                >
+                  {tab === "recordings" ? "Historia nagrań" : "Statystyki"}
+                </button>
+              ))}
+            </div>
+
+            {/* Sub-tab: Historia nagrań */}
+            {historySubTab === "recordings" && (
+              attempts.length === 0 ? (
+                <p className="py-16 text-center text-xs text-white/40">
+                  Brak nagrań. Wróć i nagraj swój pierwszy pitch.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {attempts.map((a) => (
+                    <div
+                      key={a.id}
+                      className="flex items-center justify-between rounded-xl px-4 py-3"
+                      style={{
+                        background: "rgba(28,28,32,0.45)",
+                        backdropFilter: "blur(40px) saturate(180%)",
+                        WebkitBackdropFilter: "blur(40px) saturate(180%)",
+                        border: "1px solid rgba(255,255,255,0.07)",
+                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07)",
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="flex h-8 w-8 items-center justify-center rounded-lg"
+                          style={{ background: "rgba(255,255,255,0.06)" }}
+                        >
+                          <Mic className="size-3.5 text-white/40" />
+                        </div>
+                        <div>
+                          <p className={`text-sm font-semibold ${getScoreColor(a.score)}`}>{a.score} pkt</p>
+                          <p className="text-[10px] text-white/40">{formatDate(a.date)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-white/40">{formatDuration(a.duration)}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 rounded-lg text-white/30 transition-colors hover:bg-destructive/15 hover:text-destructive"
+                          onClick={() => handleDelete(a.id)}
+                        >
+                          <Trash2 className="size-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+
+            {/* Sub-tab: Statystyki */}
+            {historySubTab === "stats" && (() => {
+              const n = attempts.length;
+              if (n === 0) return (
+                <p className="py-16 text-center text-xs text-white/40">
+                  Nagraj swój pierwszy pitch, żeby zobaczyć statystyki.
+                </p>
+              );
+              const best = Math.max(...attempts.map(a => a.score));
+              const worst = Math.min(...attempts.map(a => a.score));
+              const avgDur = Math.round(attempts.reduce((s, a) => s + a.duration, 0) / n);
+              const wpmArr = attempts.filter(a => a.wpm != null).map(a => a.wpm as number);
+              const avgWpm = wpmArr.length ? Math.round(wpmArr.reduce((s, v) => s + v, 0) / wpmArr.length) : null;
+              const fillerArr = attempts.filter(a => a.fillerWordsCount != null).map(a => a.fillerWordsCount as number);
+              const avgFiller = fillerArr.length ? Math.round(fillerArr.reduce((s, v) => s + v, 0) / fillerArr.length) : null;
+              const trend = n >= 2 ? attempts[0].score - attempts[n - 1].score : null;
+
+              const statCard = (label: string, value: string, sub?: string) => (
+                <div
+                  className="flex flex-col gap-1 rounded-2xl px-5 py-4"
+                  style={{
+                    background: "rgba(28,28,32,0.45)",
+                    backdropFilter: "blur(40px) saturate(180%)",
+                    WebkitBackdropFilter: "blur(40px) saturate(180%)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-white/35">{label}</span>
+                  <span className="text-3xl font-bold tracking-tight text-white">{value}</span>
+                  {sub && <span className="text-[11px] text-white/40">{sub}</span>}
+                </div>
+              );
+
+              return (
+                <div className="flex flex-col gap-3">
+                  {/* Średni wynik – duży */}
                   <div
-                    key={a.id}
-                    className="flex items-center justify-between rounded-xl px-4 py-3"
+                    className="flex items-center gap-5 rounded-2xl px-5 py-5"
                     style={{
-                      background: "rgba(28,28,32,0.45)",
+                      background: "rgba(28,28,32,0.55)",
                       backdropFilter: "blur(40px) saturate(180%)",
                       WebkitBackdropFilter: "blur(40px) saturate(180%)",
-                      border: "1px solid rgba(255,255,255,0.07)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07)",
+                      border: `1px solid ${getScoreBorderColor(avgScore)}`,
+                      boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), ${getScoreGlow(avgScore)}`,
                     }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="flex h-8 w-8 items-center justify-center rounded-lg"
-                        style={{ background: "rgba(255,255,255,0.06)" }}
-                      >
-                        <Mic className="size-3.5 text-white/40" />
-                      </div>
-                      <div>
-                        <p className={`text-sm font-semibold ${getScoreColor(a.score)}`}>{a.score} pkt</p>
-                        <p className="text-[10px] text-white/40">{formatDate(a.date)}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-white/40">{formatDuration(a.duration)}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 rounded-lg text-white/30 transition-colors hover:bg-destructive/15 hover:text-destructive"
-                        onClick={() => handleDelete(a.id)}
-                      >
-                        <Trash2 className="size-3" />
-                      </Button>
+                    <span className={`text-6xl font-bold leading-none ${getScoreColor(avgScore)}`}
+                      style={{ textShadow: "0 0 20px currentColor" }}>
+                      {avgScore}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-medium uppercase tracking-widest text-white/50">Średni wynik</span>
+                      <span className="mt-0.5 text-xs text-white/30">{n} {n === 1 ? "sesja" : n < 5 ? "sesje" : "sesji"}</span>
+                      {trend !== null && (
+                        <span className={`mt-1 text-[11px] font-medium ${trend > 0 ? "text-green-400" : trend < 0 ? "text-red-400" : "text-white/40"}`}>
+                          {trend > 0 ? `↑ +${trend} pkt` : trend < 0 ? `↓ ${trend} pkt` : "→ bez zmian"} vs. start
+                        </span>
+                      )}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+
+                  {/* Dwa kafelki: najlepszy / najgorszy */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {statCard("Najlepszy", `${best} pkt`)}
+                    {statCard("Najgorszy", `${worst} pkt`)}
+                  </div>
+
+                  {/* Czas + WPM */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {statCard("Śr. czas", formatDuration(avgDur))}
+                    {avgWpm !== null
+                      ? statCard("Śr. WPM", `${avgWpm}`, "słów / min")
+                      : statCard("Sesje", `${n}`)}
+                  </div>
+
+                  {/* Zapychacze */}
+                  {avgFiller !== null && statCard("Śr. zapychacze", `${avgFiller}`, "na sesję")}
+                </div>
+              );
+            })()}
           </div>
         )}
 
