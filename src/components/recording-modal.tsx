@@ -206,7 +206,7 @@ export function RecordingModal({
                 <>
                 {/* Mobile: wszystko w jednym kafelku – glass, odstep od krawedzi */}
                 <div
-                  className="mx-4 mt-4 mb-2 flex flex-1 flex-col rounded-2xl sm:hidden"
+                  className="mx-4 mt-8 mb-6 flex flex-1 flex-col rounded-2xl sm:hidden"
                   style={{
                     background: "rgba(28,28,32,0.55)",
                     backdropFilter: "blur(40px) saturate(180%)",
