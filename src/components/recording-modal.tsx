@@ -204,26 +204,30 @@ export function RecordingModal({
               {/* Idle: mobile tile LUB desktop layout */}
               {isMobileIdle ? (
                 <>
-                {/* Mobile: wszystko w jednym kafelku */}
+                {/* Mobile: wszystko w jednym kafelku – glass, odstep od krawedzi */}
                 <div
-                  className="flex flex-1 flex-col rounded-2xl border border-white/10 sm:hidden"
+                  className="mx-4 mt-4 mb-2 flex flex-1 flex-col rounded-2xl sm:hidden"
                   style={{
-                    background: "rgba(20,20,24,0.9)",
-                    backdropFilter: "blur(40px)",
-                    WebkitBackdropFilter: "blur(40px)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+                    background: "rgba(28,28,32,0.55)",
+                    backdropFilter: "blur(40px) saturate(180%)",
+                    WebkitBackdropFilter: "blur(40px) saturate(180%)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderTop: "1px solid rgba(255,255,255,0.12)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.4)",
                   }}
                 >
                   {/* Nagłówek wewnątrz kafelka */}
                   <div className="relative flex items-center justify-center px-5 pt-6 pb-2">
-                    <h2 className="text-lg font-semibold text-white">Nagrywanie pitcha</h2>
+                    <h2 className="text-lg font-bold tracking-tight text-white" style={{ textShadow: "0 0 20px rgba(255,255,255,0.2)" }}>
+                      Nagrywanie pitcha
+                    </h2>
                     <DialogClose
                       asChild
                       className="absolute right-4 top-6"
                     >
                       <button
                         type="button"
-                        className="flex h-8 w-8 items-center justify-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-white/40 transition-colors hover:bg-white/10 hover:text-white/70"
                         onClick={handleClose}
                       >
                         <X className="size-5" />
@@ -244,7 +248,11 @@ export function RecordingModal({
                       size="lg"
                       onClick={handleStartClick}
                       disabled={countdown !== null}
-                      className="btn-cta-glass mt-4 gap-2 rounded-xl border border-green-500/40 px-8 font-semibold text-white hover:bg-transparent disabled:opacity-90"
+                      className="btn-cta-glass mt-4 gap-2 rounded-xl px-8 font-semibold text-white hover:bg-transparent disabled:opacity-90"
+                      style={{
+                        border: "1px solid rgba(255,255,255,0.25)",
+                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), 0 0 14px rgba(255,255,255,0.06), 0 0 28px rgba(255,255,255,0.03)",
+                      }}
                     >
                       {countdown !== null ? (
                         <span className="text-2xl font-bold tabular-nums">{countdown}</span>
@@ -258,7 +266,7 @@ export function RecordingModal({
 
                     {/* Suwak cooldown */}
                     <div className="mt-6 w-full max-w-[280px] px-2">
-                      <label className="mb-2 block text-center text-[11px] font-medium uppercase tracking-wider text-white/40">
+                      <label className="mb-2 block text-center text-[11px] font-medium uppercase tracking-widest text-white/40">
                         Odliczanie przed startem: {cooldownSeconds} s
                       </label>
                       <input
